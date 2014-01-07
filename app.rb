@@ -3,15 +3,12 @@ require 'sinatra'
 require 'dalli'
 require 'memcachier'
 require 'securerandom'
-require 'sinatra/twitter-bootstrap'
-require 'haml'
+require 'slim'
 require 'readlists-advent-calendar'
 
 
 
 class App < Sinatra::Base
-  register Sinatra::Twitter::Bootstrap::Assets
-
   def self.cache
     @cache ||= Dalli::Client.new
   end
@@ -43,7 +40,7 @@ class App < Sinatra::Base
         # invalid url
       end
     end
-    haml :index
+    slim :index
   end
 
   get '/u/:uid' do
