@@ -40,6 +40,9 @@ class App < Sinatra::Base
             result[:finished] = :sucesssed
             result[:readlists] = readlists
             self.class.cache.set(uid, result)
+            @list = list = self.class.cache.get(:list) || []
+            list.unshift({uid: uid, url: url, readlists: readlists})
+            self.class.cache.set(:list, list)
           rescue
             result[:finished] = :failed
             self.class.cache.set(uid, result)
@@ -55,13 +58,14 @@ class App < Sinatra::Base
   end
 
   get '/u/:uid' do
-    result = @result = self.class.cache.get(params[:uid])
+    @uid = params[:uid]
+    result = @result = self.class.cache.get(@uid)
     if result
       if result[:finished]
         @readlists = result[:readlists]
         slim :result
       else
-        slim :u
+        slim :check
       end
     else
       404
@@ -71,14 +75,10 @@ class App < Sinatra::Base
   get '/u/check/:uid' do
     result = self.class.cache.get(params[:uid])
     case result[:finished]
-    when :sucesssed
-      # memo: embed iframe url
-      readlists = result[:readlists]
-      result.inspect + "share-url: #{readlists.share_url}" + "public-edit-url: #{readlists.public_edit_url}"
-    when :failed
-      result.inspect
-    when false
-      'wait...'
+    when :sucesssed, :failed
+      200
+    else
+      404
     end
   end
 end

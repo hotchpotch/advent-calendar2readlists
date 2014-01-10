@@ -1,0 +1,22 @@
+.bs-docs-secti
+  .row
+    .page-header
+      h4
+        | Generating: 
+        = @result[:url]
+
+.bs-docs-secti
+  .row
+    .progress.progress-striped.active
+      .progress-bar style="width: 100%"
+
+javascript:
+  var checker = function() {
+    $.ajax({
+      type: "GET",
+      url: "/u/check/#{@uid}",
+      success: function() { location.reload() },
+      error: function() { setTimeout(checker, 5000) }
+    })
+  }
+  setTimeout(checker, 5000);

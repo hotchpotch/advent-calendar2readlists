@@ -5,19 +5,31 @@
         | Generated: 
         = @result[:url]
 
-.row
-  .bs-callout.bs-callout-info
-    ul
-      li
-        | Share url: 
-        a href=@readlists.share_url = @readlists.share_url
-      li
-        | Public editable url: 
-        a href=@readlists.public_edit_url = @readlists.public_edit_url
+  .row
+    .bs-docs-section
+      .alert.alert-warning
+        p Warning: This page is temporary.
 
-.row
-  p
+- if @result[:finished] == :sucesssed
+  .row
+    .bs-callout.bs-callout-info
+      ul
+        li
+          | Share url: 
+          a href=@readlists.share_url = @readlists.share_url
+        li
+          | Public editable url: 
+          a href=@readlists.public_edit_url = @readlists.public_edit_url
 
-.row.text-center
-  .bs-callout.bs-callout-info
-    iframe width="800" height="600" frameborder="0" src="#{@readlists.share_url}embed"
+  .row
+    p
+
+  .row.text-center
+    .bs-callout.bs-callout-info
+      iframe width="800" height="600" frameborder="0" src="#{@readlists.share_url}embed"
+
+- else
+  .row
+    .bs-docs-section
+      .alert.alert-dismissable.alert-danger
+        p Sorry, failed...
