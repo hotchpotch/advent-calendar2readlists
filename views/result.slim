@@ -1,0 +1,23 @@
+.bs-docs-secti
+  .row
+    .page-header
+      h4
+        | Generated: 
+        = @result[:url]
+
+.row
+  .bs-callout.bs-callout-info
+    ul
+      li
+        | Share url: 
+        a href=@readlists.share_url = @readlists.share_url
+      li
+        | Public editable url: 
+        a href=@readlists.public_edit_url = @readlists.public_edit_url
+
+.row
+  p
+
+.row.text-center
+  .bs-callout.bs-callout-info
+    iframe width="800" height="600" frameborder="0" src="#{@readlists.share_url}embed"

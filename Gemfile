@@ -9,3 +9,6 @@ gem 'slim'
 gem 'readlists-anonymous'
 gem 'nokogiri'
 gem 'pry', require: false
+group :development do
+  gem 'sinatra-contrib'
+end

@@ -1,1 +1,28 @@
-div.title Hello Sinatra.
+.bs-docs-secti
+  .row
+    .page-header
+      h1
+        | Advent calender to 
+        a href="http://readlists.com/" readlists
+
+  .row
+    - if @error_msg
+      .bs-docs-section
+        .alert.alert-dismissable.alert-danger
+          p= @error_msg
+    .well
+      form.bs-example.form-horizontal action="/" method="post"
+        fieldset
+          legend Advent calendar URL
+        .form-group
+          .col-lg-12
+            input.col-lg-9 type="text" value=@url name="url" placeholder="http://www.adventar.org/calendars/id ..."
+        .form-group
+          .col-lg-12
+            button.col-lg-2.btn.btn-primary type="submit" Submit
+          .col-lg-12
+            span.help-block
+              | Supported advent calendar URL is 
+              a href="http://qiita.com/advent-calendar" Qiita
+              |  and 
+              a href="http://www.adventar.org/" Adventar

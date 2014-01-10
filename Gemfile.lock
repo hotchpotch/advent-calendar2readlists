@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    backports (3.4.0)
     coderay (1.1.0)
     daemons (1.1.9)
     dalli (2.6.4)
@@ -8,6 +9,7 @@ GEM
     memcachier (0.0.2)
     method_source (0.8.2)
     mini_portile (0.5.2)
+    multi_json (1.8.4)
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
     pry (0.9.12.4)
@@ -17,11 +19,20 @@ GEM
     rack (1.5.2)
     rack-protection (1.5.1)
       rack
+    rack-test (0.6.2)
+      rack (>= 1.0)
     readlists-anonymous (0.0.1)
     sinatra (1.4.4)
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
+    sinatra-contrib (1.4.2)
+      backports (>= 2.0)
+      multi_json
+      rack-protection
+      rack-test
+      sinatra (~> 1.4.0)
+      tilt (~> 1.3)
     slim (2.0.2)
       temple (~> 0.6.6)
       tilt (>= 1.3.3, < 2.1)
@@ -44,5 +55,6 @@ DEPENDENCIES
   pry
   readlists-anonymous
   sinatra
+  sinatra-contrib
   slim
   thin

@@ -5,16 +5,27 @@ require 'memcachier'
 require 'securerandom'
 require 'slim'
 require 'readlists-advent-calendar'
-
-
+require 'sinatra/reloader'
 
 class App < Sinatra::Base
+  configure :development do
+    register Sinatra::Reloader
+  end
+
   def self.cache
     @cache ||= Dalli::Client.new
   end
 
+  error 404 do
+    'Not Found.'
+  end
+
   get '/' do
-    if url = params[:url]
+    slim :index
+  end
+
+  post '/' do
+    if url = @url = params[:url]
       if rac = ReadlistsAdventCalendar.factory(url)
         uid = SecureRandom.hex(10)
         result = {
@@ -22,7 +33,6 @@ class App < Sinatra::Base
           url: url,
         }
         self.class.cache.set(uid, result)
-          puts 'hoge'
         EM::defer do
           puts 'start!'
           begin
@@ -38,24 +48,37 @@ class App < Sinatra::Base
         redirect "/u/#{uid}"
       else
         # invalid url
+        @error_msg = "URL(#{url}) is not support."
       end
     end
     slim :index
   end
 
   get '/u/:uid' do
-    result = self.class.cache.get(params[:uid])
+    result = @result = self.class.cache.get(params[:uid])
     if result
-      case result[:finished]
-      when :sucesssed
-        # memo: embed iframe url
-        readlists = result[:readlists]
-        result.inspect + "share-url: #{readlists.share_url}" + "public-edit-url: #{readlists.public_edit_url}"
-      when :failed
-        result.inspect
-      when false
-        'wait...'
+      if result[:finished]
+        @readlists = result[:readlists]
+        slim :result
+      else
+        slim :u
       end
+    else
+      404
+    end
+  end
+
+  get '/u/check/:uid' do
+    result = self.class.cache.get(params[:uid])
+    case result[:finished]
+    when :sucesssed
+      # memo: embed iframe url
+      readlists = result[:readlists]
+      result.inspect + "share-url: #{readlists.share_url}" + "public-edit-url: #{readlists.public_edit_url}"
+    when :failed
+      result.inspect
+    when false
+      'wait...'
     end
   end
 end
