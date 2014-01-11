@@ -1,4 +1,3 @@
-
 require 'readlists/anonymous'
 require 'open-uri'
 require 'nokogiri'
@@ -19,10 +18,6 @@ module ReadlistsAdventCalendar
     def initialize(url)
       @url = url
       @messages = []
-    end
-
-    def html
-      @html ||= Nokogiri::HTML(open(url).read)
     end
 
     def puts(msg)
@@ -74,21 +69,29 @@ module ReadlistsAdventCalendar
   class Adventar < Base
     URL = %r{\Ahttp://www.adventar.org/calendars/\d+}
 
+    def json
+      @json ||= JSON.parse(open("#{url}.json").read)
+    end
+
     def links
-      @links ||= html.css('a.mod-calendar-entryLink').map {|link| link.attr('href') }
+      @links ||= json["entries"].map {|entry| entry["url"] }
     end
 
     def title
-      @title ||= html.css('h2')[0].inner_text.strip
+      @title ||= json["title"]
     end
 
     def description
-      @description ||= html.css('.mod-calendarDescription')[0].inner_text.strip
+      @description ||= json["description"]
     end
   end
 
   class Qiita < Base
     URL = %r{\Ahttp://qiita.com/advent-calendar/\d+/}
+
+    def html
+      @html ||= Nokogiri::HTML(open(url).read)
+    end
 
     def links
       unless @links
