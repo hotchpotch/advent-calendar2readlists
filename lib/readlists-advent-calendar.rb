@@ -18,13 +18,19 @@ module ReadlistsAdventCalendar
     attr_reader :url
     def initialize(url)
       @url = url
+      @messages = []
     end
 
     def html
       @html ||= Nokogiri::HTML(open(url).read)
     end
 
-    def generate
+    def puts(msg)
+      Kernel.puts msg
+      @messages << msg
+    end
+
+    def generate(&progress)
       readlists = Readlists::Anonymous.create
 
       puts "* Created anynymous readlists"
@@ -34,7 +40,8 @@ module ReadlistsAdventCalendar
       readlists.title = self.title
       readlists.description = self.title
 
-      links.each do |url|
+      progress.call([links.size, 0, @messages.clone])
+      links.each_with_index do |url, index|
         retried = false
         begin
           puts "Add #{url}"
@@ -48,6 +55,7 @@ module ReadlistsAdventCalendar
             retry
           end
         end
+        progress.call([links.size, index + 1, @messages.clone])
       end
 
       puts "* Created anynymous readlists"

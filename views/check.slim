@@ -8,15 +8,53 @@
 .bs-docs-secti
   .row
     .progress.progress-striped.active
-      .progress-bar style="width: 100%"
+      #progress-bar.progress-bar style="width: 3%"
+
+#log.bs-docs-secti style="display:none"
+  .row
+    .panel.panel-info
+      .panel-heading
+        h3.panel-title log
+      #log-messages.panel-body data-rendered-index="0"
 
 javascript:
+  var update = function(progress) {
+    var total    = progress[0],
+        current  = progress[1],
+        messages = progress[2];
+    var percent = Math.max(3, parseInt(current / total * 100));
+    $("#progress-bar").css('width', '' + percent + '%');
+    $('#log').show();
+    var logMessages = $('#log-messages');
+    var renderedIndex = parseInt(logMessages.data('rendered-index'));
+    $.each(messages, function(index, message) {
+      if (renderedIndex <= index) {
+        logMessages.append($('<p style="margin: 0px;">').text(message));
+        renderedIndex = index+1;
+      }
+    });
+    logMessages.data('rendered-index', renderedIndex);
+  }
+
   var checker = function() {
     $.ajax({
       type: "GET",
+      dataType: 'json',
       url: "/u/check/#{@uid}",
-      success: function() { location.reload() },
-      error: function() { setTimeout(checker, 5000) }
+      success: function(json) {
+        if (json['finished'] == 'generating') {
+          update(json['progress']);
+          setTimeout(checker, 3000);
+        } else {
+          update(json['progress']);
+          setTimeout(function() {
+            $(document.body).fadeOut(3000, function() {
+              location.reload();
+            });
+          }, 2000);
+        }
+      },
+      error: function() { setTimeout(checker, 3000) }
     })
   }
-  setTimeout(checker, 5000);
+  setTimeout(checker, 3000);

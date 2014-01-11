@@ -6,8 +6,11 @@ require 'securerandom'
 require 'slim'
 require 'readlists-advent-calendar'
 require 'sinatra/reloader'
+require "sinatra/json"
+
 
 class App < Sinatra::Base
+  helpers Sinatra::JSON
   configure :development do
     register Sinatra::Reloader
   end
@@ -36,7 +39,11 @@ class App < Sinatra::Base
         EM::defer do
           puts 'start!'
           begin
-            readlists = rac.generate
+            readlists = rac.generate {|total, current, messages|
+              result[:finished] = :generating
+              result[:progress] = [total, current, messages]
+              self.class.cache.set(uid, result)
+            }
             result[:finished] = :sucesssed
             result[:readlists] = readlists
             self.class.cache.set(uid, result)
@@ -61,7 +68,8 @@ class App < Sinatra::Base
     @uid = params[:uid]
     result = @result = self.class.cache.get(@uid)
     if result
-      if result[:finished]
+      case result[:finished]
+      when :sucesssed, :failed
         @readlists = result[:readlists]
         slim :result
       else
@@ -75,8 +83,8 @@ class App < Sinatra::Base
   get '/u/check/:uid' do
     result = self.class.cache.get(params[:uid])
     case result[:finished]
-    when :sucesssed, :failed
-      200
+    when :sucesssed, :failed, :generating
+      json result
     else
       404
     end
