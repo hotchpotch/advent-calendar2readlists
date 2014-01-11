@@ -19,6 +19,33 @@ class App < Sinatra::Base
     @cache ||= Dalli::Client.new
   end
 
+  def async_generate_readlists(rac)
+    uid = SecureRandom.hex(10)
+    result = {
+      finished: false,
+      url: url,
+    }
+    self.class.cache.set(uid, result)
+    EM::defer do
+      begin
+        readlists = rac.generate {|total, current, messages|
+          result[:finished] = :generating
+          result[:progress] = [total, current, messages]
+          self.class.cache.set(uid, result)
+        }
+        result[:finished] = :sucesssed
+        result[:readlists] = readlists
+        self.class.cache.set(uid, result)
+      rescue => e
+        puts "generate error: #{e}"
+        p e.backtrace.join("\n")
+        result[:finished] = :failed
+        self.class.cache.set(uid, result)
+      end
+    end
+    uid
+  end
+
   error 404 do
     'Not Found.'
   end
@@ -30,31 +57,7 @@ class App < Sinatra::Base
   post '/' do
     if url = @url = params[:url]
       if rac = ReadlistsAdventCalendar.factory(url)
-        uid = SecureRandom.hex(10)
-        result = {
-          finished: false,
-          url: url,
-        }
-        self.class.cache.set(uid, result)
-        EM::defer do
-          puts 'start!'
-          begin
-            readlists = rac.generate {|total, current, messages|
-              result[:finished] = :generating
-              result[:progress] = [total, current, messages]
-              self.class.cache.set(uid, result)
-            }
-            result[:finished] = :sucesssed
-            result[:readlists] = readlists
-            self.class.cache.set(uid, result)
-            @list = list = self.class.cache.get(:list) || []
-            list.unshift({uid: uid, url: url, readlists: readlists})
-            self.class.cache.set(:list, list)
-          rescue
-            result[:finished] = :failed
-            self.class.cache.set(uid, result)
-          end
-        end
+        uid = async_generate_readlists(rac)
         redirect "/u/#{uid}"
       else
         # invalid url
