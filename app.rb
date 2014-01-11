@@ -5,13 +5,13 @@ require 'memcachier'
 require 'securerandom'
 require 'slim'
 require 'readlists-advent-calendar'
-require 'sinatra/reloader'
 require "sinatra/json"
 
 
 class App < Sinatra::Base
   helpers Sinatra::JSON
   configure :development do
+    require 'sinatra/reloader'
     register Sinatra::Reloader
   end
 
