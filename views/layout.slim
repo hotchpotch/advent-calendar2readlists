@@ -10,20 +10,22 @@ html
     meta name="keywords" content="advent calendar readlists"
     meta name="viewport" content="width=device-width, initial-scale=1.0"
     css:
-      .splash {
-        height: 180px;
-      }
-      .splash h1 {
-        margin-top: 70px;
-        font-weight: bold;
-        font-size: 3.5em;
-      }
-      .splash h1 a,
-      .splash h1 a:hover,
-      .splash h1 a:visited,
-      .splash h1 a:active {
-        color: #333;
-        text-decoration: none;
+      @media screen and (min-width: 768px) {
+        .splash {
+          height: 180px;
+        }
+        .splash h1 {
+          margin-top: 70px;
+          font-weight: bold;
+          font-size: 3.5em;
+        }
+        .splash h1 a,
+        .splash h1 a:hover,
+        .splash h1 a:visited,
+        .splash h1 a:active {
+          color: #333;
+          text-decoration: none;
+        }
       }
 
   body
