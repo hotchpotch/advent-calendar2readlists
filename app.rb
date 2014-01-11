@@ -5,10 +5,12 @@ require 'memcachier'
 require 'securerandom'
 require 'slim'
 require 'readlists-advent-calendar'
-require "sinatra/json"
-
+require 'sinatra/json'
+require 'rack/protection'
 
 class App < Sinatra::Base
+  enable :sessions
+  use Rack::Protection
   helpers Sinatra::JSON
   configure :development do
     require 'sinatra/reloader'
@@ -55,14 +57,12 @@ class App < Sinatra::Base
   end
 
   post '/' do
-    if url = @url = params[:url]
-      if rac = ReadlistsAdventCalendar.factory(url)
-        uid = async_generate_readlists(rac)
-        redirect "/u/#{uid}"
-      else
-        # invalid url
-        @error_msg = "URL '#{url}' is not supported."
-      end
+    if params[:url] && (rac = ReadlistsAdventCalendar.factory(params[:url].to_s))
+      uid = async_generate_readlists(rac)
+      redirect "/u/#{uid}"
+    else
+      # invalid url
+      @error_msg = "URL '#{params[:url]}' is not supported."
     end
     slim :index
   end

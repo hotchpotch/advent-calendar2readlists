@@ -8,5 +8,9 @@ gem 'dalli'
 gem 'slim'
 gem 'readlists-anonymous'
 gem 'nokogiri'
-gem 'pry', require: false
 gem 'sinatra-contrib'
+gem 'rack-protection'
+
+group :development do
+  gem 'pry', require: false
+end

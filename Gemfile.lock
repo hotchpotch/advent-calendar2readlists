@@ -53,6 +53,7 @@ DEPENDENCIES
   memcachier
   nokogiri
   pry
+  rack-protection
   readlists-anonymous
   sinatra
   sinatra-contrib
