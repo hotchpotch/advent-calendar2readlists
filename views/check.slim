@@ -3,7 +3,7 @@
     .page-header
       h4
         | Generating: 
-        = @result[:url]
+        a target="_blank" href=@result[:url] = @result[:url]
 
 .bs-docs-secti
   .row
@@ -12,7 +12,7 @@
 
 #log.bs-docs-secti style="display:none"
   .row
-    .panel.panel-info
+    .panel.panel-default
       .panel-heading
         h3.panel-title log
       #log-messages.panel-body data-rendered-index="0"

@@ -3,6 +3,7 @@ html
   head
     link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.0.3/cosmo/bootstrap.min.css"
     link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"
+    link rel="shortcut icon" href="/images/favicon.png"
     script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
     script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"
     title Advent calendar to readlists
@@ -17,23 +18,25 @@ html
         font-weight: bold;
         font-size: 3.5em;
       }
-      a.github-link:before {
-        content: "\f09b";
-        padding-right: 10px;
-        font-family: FontAwesome;
-        font-weight: normal;
-        font-style: normal;
-        display: inline-block;
+      .splash h1 a,
+      .splash h1 a:hover,
+      .splash h1 a:visited,
+      .splash h1 a:active {
+        color: #333;
+        text-decoration: none;
       }
 
   body
     .splash
       .container.text-center
-        h1 Advent calendar to readlists
+        h1
+          a href="/" Advent calendar to readlists
     #wrap
       .container
         == yield
-      hr
-      footer
-        p.text-center
-          a.github-link href="https://github.com/hotchpotch/advent-calendar2readlists" hotchpotch / advent-calendar2readlists
+
+        hr
+        footer style="padding-bottom: 15px;"
+          p.text-center
+            span.fa.fa-github style="padding-right: 10px;"
+            a href="https://github.com/hotchpotch/advent-calendar2readlists" hotchpotch / advent-calendar2readlists

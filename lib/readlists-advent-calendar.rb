@@ -44,7 +44,7 @@ module ReadlistsAdventCalendar
       links.each_with_index do |url, index|
         retried = false
         begin
-          puts "Add #{url}"
+          puts "- Added: #{url}"
           readlists << url
         rescue Readlists::Anonymous::RequestError => e
           if retried

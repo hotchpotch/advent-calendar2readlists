@@ -3,22 +3,21 @@
     .page-header
       h4
         | Generated: 
-        = @result[:url]
+        a target="_blank" href=@result[:url] = @result[:url]
 
   .row
     .bs-docs-section
-      .alert.alert-warning
-        p Warning: This page is temporary.
+      p style="color: orange; padding-left: 10px;" Warning: This page is temporary.
 
 - if @result[:finished] == :sucesssed
   .row
     .bs-callout.bs-callout-info
       ul
         li
-          | Share url: 
+          | share url: 
           a href=@readlists.share_url = @readlists.share_url
         li
-          | Public editable url: 
+          | public editable url: 
           a href=@readlists.public_edit_url = @readlists.public_edit_url
 
   .row
@@ -26,7 +25,7 @@
 
   .row.text-center
     .bs-callout.bs-callout-info
-      iframe width="800" height="600" frameborder="0" src="#{@readlists.share_url}embed"
+      iframe width="800" height="400" frameborder="0" src="#{@readlists.share_url}embed"
 
 - else
   .row
