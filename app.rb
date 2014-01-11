@@ -25,7 +25,7 @@ class App < Sinatra::Base
     uid = SecureRandom.hex(10)
     result = {
       finished: false,
-      url: url,
+      url: rac.url,
     }
     self.class.cache.set(uid, result)
     EM::defer do
@@ -56,7 +56,7 @@ class App < Sinatra::Base
     slim :index
   end
 
-  post '/' do
+  post '/g' do
     if params[:url] && (rac = ReadlistsAdventCalendar.factory(params[:url].to_s))
       uid = async_generate_readlists(rac)
       redirect "/u/#{uid}"
@@ -65,6 +65,10 @@ class App < Sinatra::Base
       @error_msg = "URL '#{params[:url]}' is not supported."
     end
     slim :index
+  end
+
+  get '/u/' do
+    redirect '/'
   end
 
   get '/u/:uid' do

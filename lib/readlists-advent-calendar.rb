@@ -94,7 +94,7 @@ module ReadlistsAdventCalendar
       unless @links
         @links = html.css('table .user-info .content a').map {|link|
           href = link.attr('href')
-          href[0] == '/' ? "http://qiita.com/#{href}" : href
+          href[0] == '/' ? "http://qiita.com#{href}" : href
         }
       end
       @links
