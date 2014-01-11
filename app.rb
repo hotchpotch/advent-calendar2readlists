@@ -58,7 +58,7 @@ class App < Sinatra::Base
         redirect "/u/#{uid}"
       else
         # invalid url
-        @error_msg = "URL(#{url}) is not support."
+        @error_msg = "URL '#{url}' is not supported."
       end
     end
     slim :index

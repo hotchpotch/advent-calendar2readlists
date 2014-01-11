@@ -1,17 +1,39 @@
 doctype html
 html
   head
-    link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"
-    link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css"
+    link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.0.3/cosmo/bootstrap.min.css"
+    link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"
     script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
     script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"
     title Advent calendar to readlists
     meta name="keywords" content="advent calendar readlists"
     meta name="viewport" content="width=device-width, initial-scale=1.0"
+    css:
+      .splash {
+        height: 180px;
+      }
+      .splash h1 {
+        margin-top: 70px;
+        font-weight: bold;
+        font-size: 3.5em;
+      }
+      a.github-link:before {
+        content: "\f09b";
+        padding-right: 10px;
+        font-family: FontAwesome;
+        font-weight: normal;
+        font-style: normal;
+        display: inline-block;
+      }
 
   body
+    .splash
+      .container.text-center
+        h1 Advent calendar to readlists
     #wrap
       .container
-
         == yield
-
+      hr
+      footer
+        p.text-center
+          a.github-link href="https://github.com/hotchpotch/advent-calendar2readlists" hotchpotch / advent-calendar2readlists
