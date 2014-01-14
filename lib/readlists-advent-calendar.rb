@@ -1,10 +1,11 @@
 require 'readlists/anonymous'
 require 'open-uri'
 require 'nokogiri'
+require 'json'
 
 module ReadlistsAdventCalendar
   def factory(url)
-    [Adventar, Qiita].each do |klass|
+    [Adventar, Qiita, Atnd].each do |klass|
       if klass.const_get(:URL).match url
         return klass.new(url)
       end
@@ -23,6 +24,10 @@ module ReadlistsAdventCalendar
     def puts(msg)
       Kernel.puts msg
       @messages << msg
+    end
+
+    def html
+      @html ||= Nokogiri::HTML(open(url).read)
     end
 
     def generate(&progress)
@@ -67,7 +72,7 @@ module ReadlistsAdventCalendar
   end
 
   class Adventar < Base
-    URL = %r{\Ahttp://www.adventar.org/calendars/\d+}
+    URL = %r{\Ahttps?://www\.adventar\.org/calendars/\d+}
 
     def json
       @json ||= JSON.parse(open("#{url}.json").read)
@@ -87,11 +92,7 @@ module ReadlistsAdventCalendar
   end
 
   class Qiita < Base
-    URL = %r{\Ahttp://qiita.com/advent-calendar/\d+/}
-
-    def html
-      @html ||= Nokogiri::HTML(open(url).read)
-    end
+    URL = %r{\Ahttps?://qiita\.com/advent-calendar/\d+/}
 
     def links
       unless @links
@@ -111,4 +112,33 @@ module ReadlistsAdventCalendar
       @description ||= html.css('meta[name=description]')[0].attr('content')
     end
   end
+
+  class Atnd < Base
+    URL = %r{\Ahttps?://atnd\.org/events/\d+}
+
+    def links
+      unless @links
+        @links = html.css('#post-body table a').map {|link|
+          href = link.attr('href').chomp
+        }.uniq.select {|url|
+          case url
+          when %r{\Ahttps?://twitter\.com/}
+            false
+          else
+            true
+          end
+        }
+      end
+      @links
+    end
+
+    def title
+      @title ||= html.css('#events h1 a')[0].inner_text.strip
+    end
+
+    def description
+      @description ||= html.css('#events h2')[0].inner_text.strip
+    end
+  end
 end
+
